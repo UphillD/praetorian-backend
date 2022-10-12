@@ -1,0 +1,9 @@
+# Credentials & ML models
+build/models
+build/credentials.env
+
+# Python files
+__pycache__/
+
+# Kate temporary files
+*.kate-swp
