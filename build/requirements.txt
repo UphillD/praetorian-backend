@@ -1,0 +1,8 @@
+# Python 3 requirements
+loguru
+oauthlib==3.2.0
+pytz
+requests==2.27.0
+requests-oauthlib
+sklearn
+tweepy
