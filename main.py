@@ -23,14 +23,14 @@ from common import twitter
 def init_text_classifier():
 	time_start = time.perf_counter()
 	model = nlu.load(path=config.text_model_path)
-	logger.info('Text model loaded in {:.2f} seconds.'.format(time.perf_counter() - time_start))
+	logger.success('Text model loaded in {:.2f} seconds.'.format(time.perf_counter() - time_start))
 	return(model)
 
 # Initializes image classifier
 def init_image_classifier():
 	time_start = time.perf_counter()
 	model = keras.models.load_model(config.image_model_path)
-	logger.info('Image model loaded in {:.2f} seconds.'.format(time.perf_counter() - time_start))
+	logger.success('Image model loaded in {:.2f} seconds.'.format(time.perf_counter() - time_start))
 	return(model)
 
 
@@ -90,7 +90,7 @@ if __name__ == '__main__':
 					# Load tweet object
 					tweet = json.loads(line)
 					# Classify tweet as pertinent or not
-					classification, annotated_tweet = classifyTweet(tweet, rules, identifiers, model)
+					classification, annotated_tweet = classifyTweet(tweet, identifiers, text_model, image_model)
 					if classification:
 						cnt[b] += 1
 						payload = json.dumps({ 'tweet': tweet, 'text': annotated_tweet, 'collection': tag_tweets })
