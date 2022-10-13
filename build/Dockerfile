@@ -14,18 +14,19 @@ WORKDIR /app
 # Install packages
 RUN apt-get update \
  && apt-get install -y --no-install-recommends -q \
-	bash build-essential wget git vim \
+	build-essential \
+	bash git vim wget \
+	openjdk-8-jdk-headless \
 	python3 \
 	python3-pip python3-setuptools python3-six \
 	python3-numpy python3-pandas \
-	openjdk-8-jdk-headless \
- && apt-get autoremove -y \
- && apt-get clean \
+ && apt-get autoremove -y -q \
+ && apt-get clean -y -q \
  && rm -rf /var/lib/apt/lists/*
 
 # Install python requirements
 COPY requirements.txt .
-RUN pip3 install -q -r requirements.txt --no-cache-dir \
+RUN pip3 install -q --no-cache-dir -r requirements.txt\
  && rm requirements.txt
 
 # Set enviroment variables
@@ -38,7 +39,7 @@ RUN wget -nv "https://archive.apache.org/dist/spark/spark-3.0.2/spark-3.0.2-bin-
  && rm -rf spark-3.0.2-bin-hadoop2.7.tgz
 
 # Install NLU
-RUN pip3 install --upgrade -q pyspark==3.0.3 spark-nlp==3.4.0 findspark nlu==3.4.1rc5 --no-cache-dir
+RUN pip3 install --upgrade -q --no-cache-dir pyspark==3.0.3 spark-nlp==3.4.0 findspark nlu==3.4.1rc5
 
 # Copy ML models
 COPY models /app/models

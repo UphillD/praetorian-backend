@@ -12,18 +12,14 @@ source /app/credentials.env
 git clone "https://${Github_Username}:${Github_Passcode}@github.com/UphillD/praetorian-backend"
 cd praetorian-backend
 
-# Customize text
-ORANGE='\033[0;33m'
-CYAN='\033[0;36m'
-NC='\033[0m'		# No Color
-bold=$(tput bold)
-regular=$(tput sgr0)
-
 # Set timezone
 export TZ='Europe/Athens'
 
 # Define function that displays help message
 function help_msg () {
+	if [ "$1" = "error" ]; then
+		echo -e 'Non standard arguments detected.'
+	fi
 	echo -e 'Usage:'
 	echo -e '\t docker run [OPTIONS] --name praetorian_backend --log-driver local --network host -t uphilld/praetorian:backend [ARGUMENT]'
 	echo -e ''
@@ -57,8 +53,8 @@ elif [ $# -eq 1 ]; then
 	"aux")	python3 -u aux.py ;;
 	"bash")	exec /bin/bash ;;
 	"help") help_msg ;;
-	*)		echo -e 'Non standard arguments detected.' && help_msg ;;
+	*)		help_msg 'error' ;;
 	esac
 else
-	echo -e 'Non standard arguments detected.' && help_msg
+	help_msg 'error'
 fi
