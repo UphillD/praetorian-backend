@@ -44,8 +44,8 @@ clear
 
 # Launch all (no arguments)
 if [ $# -eq 0 ]; then
-	python3 -u main.py &
-	python3 -u aux.py &
+	python3 -u aux.py > aux.log 2>&1 &
+	python3 -u main.py
 # Conditional launch (one argument)
 elif [ $# -eq 1 ]; then
 	case "$1" in
