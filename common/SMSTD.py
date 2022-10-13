@@ -46,7 +46,7 @@ def classifyTweet(tweet, identifiers, _, __):
 	# Check location for identifiers
 	if location:
 		location_stringified = (' '.join(list(location.values()))).casefold()
-		if any(identifier['value'].casefold() in place_stringified for identifier in identifiers):
+		if any(identifier['value'].casefold() in location_stringified for identifier in identifiers):
 			found = True
 
 	return(found, text)
