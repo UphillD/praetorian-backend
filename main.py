@@ -59,6 +59,7 @@ if __name__ == '__main__':
 
 		if not status:
 			time.sleep(1)
+			status = iop.get_status()
 		else:
 			if status == 'SMSTD':
 				from common.SMSTD import *

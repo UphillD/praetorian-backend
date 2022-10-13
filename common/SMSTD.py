@@ -26,12 +26,15 @@ def classifyTweet(tweet, identifiers, _, __):
 
 	# TAGGING
 	# Surround words matching crawling rules with '$'
+	already_tagged = []
 	for rule in tweet['matching_rules']:
-		for word in rule['tag']:
-			text = text.replace(word, '$' + word + '$')
+		for word in rule['tag'].split():
+			if word != '&' and word not in already_tagged:
+				text = text.replace(word, '$' + word + '$')
+				already_tagged.append(word)
 
 	# Clean up text and put it in a list
-	clean_text_list = text.casefold().translate(string.maketrans('', '', string.punctuation)).split()
+	clean_text_list = text.casefold().translate(str.maketrans('', '', string.punctuation)).split()
 
 	# CLASSIFICATION
 	# Check text for identifiers, surround words matching identifiers with '&'
@@ -41,8 +44,8 @@ def classifyTweet(tweet, identifiers, _, __):
 			found = True
 
 	# Check location for identifiers
-	if place:
-		place_stringified = (' '.join(list(place.values()))).casefold()
+	if location:
+		location_stringified = (' '.join(list(location.values()))).casefold()
 		if any(identifier['value'].casefold() in place_stringified for identifier in identifiers):
 			found = True
 
