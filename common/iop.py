@@ -63,25 +63,26 @@ def get_identifiers(tag):
 
 # Gets queued tweets from the IOP
 def get_tweets():
+	# Initialize tweet list
+	tweets = []
 	logger.log('COMM', 'Quering the IOP for queued tweets.')
 	r = requests.get(config.urls['iop']['socialMedia'], params=config.query)
 	try:
 		r.raise_for_status()
 	except:
 		logger.error('Query failed (HTTP {}): {}.'.format(r.status_code, r.text))
-		sys.exit(-1)
-	tweets = []
-	for element in r.json()['data']:
-		if 'collection' in element and element['collection'] == 'tweets2post':
-			logger.success('Tweet found: {}.'.format(element['_id']))
-			logger.info('Storing tweet locally')
-			tweets.append(element['text'])
-			logger.log('COMM', 'Quering the IOP to delete tweet.')
-			r = requests.delete(config.urls['iop']['socialMedia'] + element['_id'], params=config.query)
-			try:
-				r.raise_for_status
-			except:
-				logger.warn('Query failed (HTTP {}): {}.'.format(r.status_code, r.text))
+	else:
+		for element in r.json()['data']:
+			if 'collection' in element and element['collection'] == 'tweets2post':
+				logger.success('Tweet found: {}.'.format(element['_id']))
+				logger.info('Storing tweet locally')
+				tweets.append(element['text'])
+				logger.log('COMM', 'Quering the IOP to delete tweet.')
+				r = requests.delete(config.urls['iop']['socialMedia'] + element['_id'], params=config.query)
+				try:
+					r.raise_for_status
+				except:
+					logger.warn('Query failed (HTTP {}): {}.'.format(r.status_code, r.text))
 	return(tweets)
 
 # Initializes status flag in IOP

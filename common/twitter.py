@@ -76,7 +76,6 @@ def post_tweet(text):
 	try:
 		response = api.update_status(text)
 		logger.success('Tweet created.')
-		print(response)
 		return(response)
 	except Exception as e:
 		logger.error('Failed to create tweet: {}'.format(str(e)))

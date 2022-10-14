@@ -3,7 +3,7 @@
 # Work Package 6	:	Response Coordination
 # Task 4			:	Integration with Social Media
 # ~~~~~~~~~~~~~~~~~~~~
-# Main implementation (PR)
+# Auxiliary process (ATP)
 
 import time
 
@@ -12,19 +12,16 @@ from common import iop
 from common import twitter
 
 
-
+# MAIN
 if __name__ == '__main__':
 
 	# Grab logger configuration
 	logger = config.logger
 
-	logger.info('Initializing the Tweet Poster module.')
+	logger.info('Initiating the ATP...')
 	# inf loop
 	while(True):
 		tweets = iop.get_tweets()
-		if tweets:
-			for tweet in tweets:
-				twitter.post_tweet(tweet)
-		else:
-			logger.info('No tweets found.')
+		for tweet in tweets:
+			twitter.post_tweet(tweet)
 		time.sleep(1)

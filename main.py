@@ -3,7 +3,7 @@
 # Work Package 6	:	Response Coordination
 # Task 4			:	Integration with Social Media
 # ~~~~~~~~~~~~~~~~~~~~
-# Main implementation (SMSTD & CO)
+# Main process (SMSTD & CO)
 
 import array
 import json
@@ -19,22 +19,22 @@ from common import twitter
 
 
 
-# Initializes text classifier
+# Initializes text classifier (NLU)
 def init_text_classifier():
 	time_start = time.perf_counter()
 	model = nlu.load(path=config.text_model_path)
-	logger.success('Text model loaded in {:.2f} seconds.'.format(time.perf_counter() - time_start))
+	logger.success('Text classification model loaded in {:.2f} seconds.'.format(time.perf_counter() - time_start))
 	return(model)
 
-# Initializes image classifier
+# Initializes image classifier (Keras)
 def init_image_classifier():
 	time_start = time.perf_counter()
 	model = keras.models.load_model(config.image_model_path)
-	logger.success('Image model loaded in {:.2f} seconds.'.format(time.perf_counter() - time_start))
+	logger.success('Image classification model loaded in {:.2f} seconds.'.format(time.perf_counter() - time_start))
 	return(model)
 
 
-
+# MAIN
 if __name__ == '__main__':
 
 	# Get logger configuration
@@ -66,7 +66,7 @@ if __name__ == '__main__':
 			elif status == 'CO':
 				from common.CO import *
 			logger.info('{} process running...'.format(status))
-			# Get new rules from IOP
+			# Get current rules from IOP
 			rules = iop.get_rules(tag_rules)
 			# Get old rules from twitter
 			old_rules = twitter.get_rules()
@@ -74,35 +74,36 @@ if __name__ == '__main__':
 			twitter.delete_rules(old_rules)
 			# Set new rules on twitter
 			twitter.set_rules(rules)
-			# Get identifiers from IOP
+			# Get CI identifiers from IOP
 			identifiers = (iop.get_identifiers(tag_identifiers) if status == 'SMSTD' else None)
-			logger.success('Initiating twitter stream...')
 
-			# Start twitter stream
+			# Initiate twitter stream
 			r = requests.get(config.urls['twitter']['stream'], auth=twitter.bearer_oauth, params=config.query_params, stream=True)
 			try:
 				r.raise_for_status()
 			except:
 				logger.error('Failed initiating twitter stream (HTTP {}): {}'.format(r.status_code, r.text))
 				sys.exit(-1)
+			logger.success('Initiating twitter stream...')
+			# Stream, each line is a tweet
 			for line in r.iter_lines():
 				if line:
 					cnt[a] += 1
 					# Load tweet object
 					tweet = json.loads(line)
 					# Classify tweet as pertinent or not
-					classification, annotated_tweet = classifyTweet(tweet, identifiers, text_model, image_model)
+					classification, annotated_text = classifyTweet(tweet, identifiers, text_model, image_model)
 					if classification:
 						cnt[b] += 1
-						payload = json.dumps({ 'tweet': tweet, 'text': annotated_tweet, 'collection': tag_tweets })
-						r = requests.post(config.urls['iop']['socialMedia'], params=config.query, data=payload, headers=config.headers)
+						payload = json.dumps({ 'tweet': tweet, 'text': annotated_text, 'collection': tag_tweets })
+						r = requests.post(config.urls['iop']['socialMedia'], data=payload, params=config.query, headers=config.headers)
 						try:
 							r.raise_for_status()
 						except:
 							logger.error('Failed registering tweet on IOP (HTTP {}): {}'.format(r.status_code, r.text))
 						else:
 							logger.info('Pertinent tweet registered on IOP.')
-					logger.info('{} tweets detected, of which {} identified as pertinent'.format(cnt[a], cnt[b]))
+					logger.info('{} tweets crawled, of which {} identified as pertinent'.format(cnt[a], cnt[b]))
 				# Recheck running flag
 				next_status = iop.get_status()
 				if status != next_status:

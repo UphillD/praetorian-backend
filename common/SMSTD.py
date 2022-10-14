@@ -21,7 +21,7 @@ def classifyTweet(tweet, identifiers, _, __):
 
 	# DATA EXTRACTION
 	# Get tweet text and location (if present)
-	text = tweet['data']['text']
+	text = tweet['data']['text'].replace('Disclaimer: This tweet contains false information.', '')
 	location = (tweet['includes']['places'][0] if 'places' in tweet['includes'] else None)
 
 	# TAGGING
