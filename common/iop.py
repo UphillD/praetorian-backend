@@ -27,7 +27,6 @@ def get_rules(tag):
 	except:
 		logger.error('Query failed (HTTP {}): {}.'.format(r.status_code, r.text))
 		sys.exit(-1)
-	logger.success('Query successful.')
 	# Generate list of rules
 	query_rules = []
 	for element in r.json()['data']:
@@ -49,7 +48,6 @@ def get_identifiers(tag):
 	except:
 		logger.error('Query failed (HTTP {}): {}.'.format(r.status_code, r.text))
 		sys.exit(-1)
-	logger.success('Query successful.')
 	# Generate list of identifiers
 	identifiers = []
 	for element in r.json()['data']:

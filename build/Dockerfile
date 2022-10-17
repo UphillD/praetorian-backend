@@ -26,7 +26,7 @@ RUN apt-get update \
 
 # Install python requirements
 COPY requirements.txt .
-RUN pip3 install -q --no-cache-dir -r requirements.txt\
+RUN pip3 install -q --no-cache-dir -r requirements.txt \
  && rm requirements.txt
 
 # Set enviroment variables

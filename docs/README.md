@@ -11,7 +11,7 @@ This work makes up the **backend** of the system developed by ICCS for the Task 
 |:---:|
 | Praetorian H2020 Project |
 | Work Package 6: Response Coordination |
-|Task 4: Integration with Social Media |
+| Task 4: Integration with Social Media |
 
 
 ## Table of Contents
@@ -48,11 +48,11 @@ who can then optionally edit it and post it.
 
 **Launch:**
 
-`docker run -d --name praetorian_modules --log-driver local --network host -t uphilld/praetorian:modules`
+`docker run -d --name praetorian_backend --log-driver local --network host -t uphilld/praetorian:backend`
 
 **Print help:**
 
-`docker run -it --name praetorian_modules --log-driver local --network host -t uphilld/praetorian:modules help`
+`docker run -it --name praetorian_backend --log-driver local --network host -t uphilld/praetorian:backend help`
 
 ## Technologies Used
 
