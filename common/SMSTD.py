@@ -38,10 +38,12 @@ def classifyTweet(tweet, identifiers, _, __):
 
 	# CLASSIFICATION
 	# Check text for identifiers, surround words matching identifiers with '&'
+	ids = []
 	for identifier in identifiers:
 		if identifier['value'].casefold() in clean_text_list:
 			text = text.replace(identifier['value'], '&' + identifier['value'] + '&')
 			found = True
+			ids.append(identifier['value'])
 
 	# Check location for identifiers
 	if location:
@@ -49,4 +51,4 @@ def classifyTweet(tweet, identifiers, _, __):
 		if any(identifier['value'].casefold() in location_stringified for identifier in identifiers):
 			found = True
 
-	return(found, text)
+	return(found, text, ids)

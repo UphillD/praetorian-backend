@@ -91,9 +91,13 @@ if __name__ == '__main__':
 					cnt[a] += 1
 					# Load tweet object
 					tweet = json.loads(line)
+					for rule in tweet['matching_rules']:
+						logger.info('Crawling rule matched: {}.'.format(rule['tag']))
 					# Classify tweet as pertinent or not
-					classification, annotated_text = classifyTweet(tweet, identifiers, text_model, image_model)
+					classification, annotated_text, matched_identifiers = classifyTweet(tweet, identifiers, text_model, image_model)
 					if classification:
+						for identifier in matched_identifiers:
+							logger.info('CI identifier matched: {}.'.format(identifier))
 						cnt[b] += 1
 						payload = json.dumps({ 'tweet': tweet, 'text': annotated_text, 'collection': tag_tweets })
 						r = requests.post(config.urls['iop']['socialMedia'], data=payload, params=config.query, headers=config.headers)

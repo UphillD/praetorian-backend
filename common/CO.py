@@ -50,4 +50,4 @@ def classifyTweet(tweet, _, text_model, image_model):
 
 	# CLASSIFICATION
 	# Classify the tweet's images
-	return(found, text)
+	return(found, text, None)
