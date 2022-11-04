@@ -17,17 +17,14 @@ RUN apt-get update \
 	build-essential \
 	bash git vim wget \
 	openjdk-8-jdk-headless \
+	libopencv-dev python3-opencv \
 	python3 \
 	python3-pip python3-setuptools python3-six \
 	python3-numpy python3-pandas \
  && apt-get autoremove -y -q \
  && apt-get clean -y -q \
+ && apt-get autoclean -y -q \
  && rm -rf /var/lib/apt/lists/*
-
-# Install python requirements
-COPY requirements.txt .
-RUN pip3 install -q --no-cache-dir -r requirements.txt \
- && rm requirements.txt
 
 # Set enviroment variables
 ENV SPARK_HOME="/app/spark-3.0.2-bin-hadoop2.7"
@@ -38,8 +35,10 @@ RUN wget -nv "https://archive.apache.org/dist/spark/spark-3.0.2/spark-3.0.2-bin-
  && tar -xf spark-3.0.2-bin-hadoop2.7.tgz \
  && rm -rf spark-3.0.2-bin-hadoop2.7.tgz
 
-# Install NLU
-RUN pip3 install --upgrade -q --no-cache-dir pyspark==3.0.3 spark-nlp==3.4.0 findspark nlu==3.4.1rc5
+# Install Python requirements
+COPY requirements.txt .
+RUN pip3 install --upgrade --no-cache-dir -q -r requirements.txt \
+ && rm requirements.txt
 
 # Copy ML models
 COPY models /app/models
@@ -68,6 +67,6 @@ LABEL org.label-schema.vcs-ref $GIT_SHA
 LABEL org.label-schema.vendor "Institute of Communication and Computer Systems (ICCS)"
 LABEL org.label-schema.version "RC"
 LABEL org.label-schema.schema-version "1.0"
-LABEL org.label-schema.docker.cmd "docker run -d --name praetorian_backend --log-driver local --network host -t uphilld/praetorian:backend"
+LABEL org.label-schema.docker.cmd "docker run -d --name praetorian_backend --log-driver local --network host --gpus all -t uphilld/praetorian:backend"
 LABEL org.label-schema.docker.cmd.devel "docker run -it --name praetorian_backend_devel --log-driver local --network host -t uphilld/praetorian:backend"
 LABEL org.label-schema.docker.cmd.help "docker exec $CONTAINER /bin/bash /app/entrypoint.sh help"

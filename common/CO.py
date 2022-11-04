@@ -5,7 +5,10 @@
 # ~~~~~~~~~~~~~~~~~~~~
 # CO-specific functionality
 
+import cv2
+import numpy
 import re
+import urllib
 
 tag_rules = 'lexicon_CO'
 tag_identifiers = ''
@@ -26,21 +29,33 @@ def cleanup_text(text):
 def classify_text(text, model):
 	text_clean = [ cleanup_text(text) ]
 	prediction = model.predict(text_clean)
-	if prediction.iat[0, 2] == 'informative':
-		return(True)
-	else:
-		return(False)
+	return(prediction.iat[0, 2] == 'informative')
+
+def classify_image(image_url, image_model):
+	# Open image
+	r = urllib.request.urlopen(image_url)
+	# Transform image to numpy array
+	a = numpy.asarray(bytearray(r.read()), dtype=numpy.uint8)
+	# Expand image dimensions from 3 to 4
+	image = numpy.expand_dims(cv2.imdecode(a, -1), axis=0)
+	# Predict
+	return(image_model.predict(image)[0][0] == 1.0)
 
 def classifyTweet(tweet, _, text_model, image_model):
 
 	# Initialize found flag
 	found = False
-
-	# DATA EXTRACTION
-	# Classify the tweet's text
 	text = tweet['data']['text']
-	if classify_text(text, text_model):
-		found = True
+
+	# CLASSIFICATION
+	# Classify the tweet's text
+	found = classify_text(text, text_model):
+	# Classify the tweet's media
+	if not found and 'media' in tweet['includes']:
+		for media in tweet['includes']['media']:
+			if classify_image(media['url'], image_model):
+				found = True
+				break
 
 	# TAGGING
 	# Surround words matching crawling rules with '&'

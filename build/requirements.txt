@@ -8,5 +8,10 @@ loguru
 oauthlib==3.2.0
 requests==2.27.0
 requests-oauthlib
-sklearn
 tweepy
+# Image classification
+opencv-python
+findspark
+nlu==3.4.1rc5
+pyspark==3.0.3
+spark-nlp==3.4.0
