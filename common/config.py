@@ -61,7 +61,7 @@ query_params = {
 # IOP #
 #######
 import os
-query = {'appId' : os.getenv('IOP_appId'), 'keyId' : os.getenv('IOP_keyId')}
+query = {'appId' : os.getenv('IOP_APPID'), 'keyId' : os.getenv('IOP_KEYID')}
 headers = {'content-type': 'application/json'}
 
 ######

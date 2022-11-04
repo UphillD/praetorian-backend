@@ -54,9 +54,6 @@ RUN chmod 600 /github-key \
  && echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config \
  && git clone git@github.com:UphillD/praetorian-backend.git
 
-# Copy the credentials
-COPY external/credentials.env /app
-
 # Copy the entrypoint
 COPY entrypoint.sh /app
 

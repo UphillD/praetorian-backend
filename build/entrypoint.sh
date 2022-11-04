@@ -6,7 +6,6 @@
 # Docker image entrypoint
 
 # Grab the credentials
-source /app/credentials.env
 cd praetorian-backend
 
 # Define function that displays help message

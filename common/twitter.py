@@ -27,10 +27,10 @@ logger = config.logger
 def authorize_OAuth():
 	logger.log('AUTH', 'Authenticating with Twitter (API v1.1).')
 	# Grab the credentials from the enviroment variables
-	consumer_key = os.getenv('Twitter_Consumer_Key')
-	consumer_secret = os.getenv('Twitter_Consumer_Secret')
-	access_token = os.getenv('Twitter_Access_Token')
-	access_secret = os.getenv('Twitter_Access_Secret')
+	consumer_key = os.getenv('TWITTER_CONSUMER_KEY')
+	consumer_secret = os.getenv('TWITTER_CONSUMER_SECRET')
+	access_token = os.getenv('TWITTER_ACCESS_TOKEN')
+	access_secret = os.getenv('TWITTER_ACCESS_SECRET')
 	if not consumer_key or not consumer_secret or not access_token or not access_secret:
 		logger.error('Failed to grab one or more credentials from environment variables.')
 		sys.exit(-1)
@@ -88,7 +88,7 @@ def post_tweet(text):
 def bearer_oauth(r):
 	logger.log('AUTH', 'Authenticating with Twitter (API v2).')
 	# Grab the credential from the enviroment variable
-	bearer_token = os.getenv('Twitter_Bearer_Token')
+	bearer_token = os.getenv('TWITTER_BEARER_TOKEN')
 	if not bearer_token:
 		logger.error('Failed to grab bearer token from environment variable.')
 		sys.exit(-1)
