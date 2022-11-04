@@ -1,6 +1,11 @@
-# Credentials & ML models
-build/models
+# Credentials
 build/credentials.env
+
+# ML models
+build/models
+
+# NLU cache
+build/cache
 
 # Python files
 __pycache__/

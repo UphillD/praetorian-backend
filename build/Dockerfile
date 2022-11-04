@@ -43,6 +43,9 @@ RUN pip3 install --upgrade --no-cache-dir -q -r requirements.txt \
 # Copy ML models
 COPY models /app/models
 
+# Copy NLU cache
+COPY cache /root
+
 # Copy the credentials
 COPY credentials.env /app
 
