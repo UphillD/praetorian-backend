@@ -42,20 +42,20 @@ RUN pip3 install --upgrade --no-cache-dir -q -r requirements.txt \
  && rm requirements.txt
 
 # Copy ML models
-COPY models /app/models
+COPY external/models /app/models
 
 # Copy NLU cache
-COPY cache /root
+COPY external/cache /root
 
 # Clone git repo
-COPY github-key /
+COPY external/github-key /
 RUN chmod 600 /github-key \
  && echo "IdentityFile /github-key" >> /etc/ssh/ssh_config \
  && echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config \
  && git clone git@github.com:UphillD/praetorian-backend.git
 
 # Copy the credentials
-COPY credentials.env /app
+COPY external/credentials.env /app
 
 # Copy the entrypoint
 COPY entrypoint.sh /app

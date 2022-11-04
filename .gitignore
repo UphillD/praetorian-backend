@@ -1,12 +1,5 @@
-# Credentials
-build/credentials.env
-build/github-key*
-
-# ML models
-build/models
-
-# NLU cache
-build/cache
+# External files
+build/external/
 
 # Python files
 __pycache__/
