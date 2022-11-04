@@ -17,6 +17,7 @@ RUN apt-get update \
 	build-essential \
 	bash git vim wget \
 	openjdk-8-jdk-headless \
+	openssh-client \
 	libopencv-dev python3-opencv \
 	python3 \
 	python3-pip python3-setuptools python3-six \
@@ -46,11 +47,21 @@ COPY models /app/models
 # Copy NLU cache
 COPY cache /root
 
+# Clone git repo
+COPY github-key /
+RUN chmod 600 /github-key \
+ && echo "IdentityFile /github-key" >> /etc/ssh/ssh_config \
+ && echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config \
+ && git clone git@github.com:UphillD/praetorian-backend.git
+
 # Copy the credentials
 COPY credentials.env /app
 
 # Copy the entrypoint
 COPY entrypoint.sh /app
+
+# Set timezone
+ENV TZ="Europe/Athens"
 
 # Set entrypoint
 ENTRYPOINT ["/app/entrypoint.sh"]

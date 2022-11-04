@@ -7,13 +7,7 @@
 
 # Grab the credentials
 source /app/credentials.env
-
-# Clone the code repo
-git clone "https://${Github_Username}:${Github_Passcode}@github.com/UphillD/praetorian-backend"
 cd praetorian-backend
-
-# Set timezone
-export TZ='Europe/Athens'
 
 # Define function that displays help message
 function help_msg () {

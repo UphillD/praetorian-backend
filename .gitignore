@@ -1,5 +1,6 @@
 # Credentials
 build/credentials.env
+build/github-key*
 
 # ML models
 build/models
