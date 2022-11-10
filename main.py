@@ -99,6 +99,13 @@ if __name__ == '__main__':
 						for identifier in matched_identifiers:
 							logger.info('CI identifier matched: {}.'.format(identifier))
 						cnt[b] += 1
+						# Format tweet object for IOP storing
+						del tweet['matching_rules']
+						del tweet['data']['author_id']
+						del tweet['data']['edit_history_tweet_ids']
+						tweet['data']['text'] = tweet['data']['text'].replace('Disclaimer: This tweet contains false information.', '')
+						tweet['data']['text_annotated'] = annotated_text
+						tweet['data']['url'] = 'https://twitter.com/' + tweet['includes']['users'][0]['username'] + '/status/' + tweet['data']['id']
 						payload = json.dumps({ 'tweet': tweet, 'text': annotated_text, 'collection': tag_tweets })
 						r = requests.post(config.urls['iop']['socialMedia'], data=payload, params=config.query, headers=config.headers)
 						try:
