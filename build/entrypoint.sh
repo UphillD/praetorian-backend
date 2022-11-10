@@ -6,7 +6,7 @@
 # Docker image entrypoint
 
 # Grab the credentials
-cd praetorian-backend
+cd /app/praetorian-backend
 
 # Define function that displays help message
 function help_msg () {
@@ -32,8 +32,6 @@ function help_msg () {
 	echo -e 'and if you wish to see the logs of the container, run this:'
 	echo -e '\t docker logs praetorian_backend'
 }
-
-clear
 
 # Launch all (no arguments)
 if [ $# -eq 0 ]; then

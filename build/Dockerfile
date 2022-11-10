@@ -54,14 +54,11 @@ RUN chmod 600 /github-key \
  && echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config \
  && git clone git@github.com:UphillD/praetorian-backend.git
 
-# Copy the entrypoint
-COPY entrypoint.sh /app
-
 # Set timezone
 ENV TZ="Europe/Athens"
 
 # Set entrypoint
-ENTRYPOINT ["/app/entrypoint.sh"]
+ENTRYPOINT ["/app/praetorian-backend/build/entrypoint.sh"]
 
 # Set labels according to Label Schema Convention
 # http://label-schema.org/rc1/
