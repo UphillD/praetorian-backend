@@ -21,7 +21,10 @@ if __name__ == '__main__':
 	logger.info('Initiating the ATP...')
 	# inf loop
 	while(True):
-		tweets = iop.get_tweets()
-		for tweet in tweets:
-			twitter.post_tweet(tweet)
+		try:
+			tweets = iop.get_tweets()
+			for tweet in tweets:
+				twitter.post_tweet(tweet)
+		except Exception as e:
+			logger.error('Failed to grab tweets: {}'.format(e))
 		time.sleep(1)
