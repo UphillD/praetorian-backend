@@ -21,8 +21,7 @@ function help_msg () {
 	echo -e '\t -it     launches the container in interactive mode'
 	echo -e 'Arguments:'
 	echo -e '\t(none)   launches both modules'
-	echo -e '\t main    launches the main module (SMSTD & CO)'
-	echo -e '\t aux     launches the aux module (PR)'
+	echo -e '\t main    launches the main module'
 	echo -e '\t bash    launches an instance of bash'
 	echo -e '\t help    prints this help message'
 	echo -e ''
@@ -35,13 +34,11 @@ function help_msg () {
 
 # Launch all (no arguments)
 if [ $# -eq 0 ]; then
-	python3 -u aux.py > aux.log 2>&1 &
 	python3 -u main.py
 # Conditional launch (one argument)
 elif [ $# -eq 1 ]; then
 	case "$1" in
 	"main")	python3 -u main.py ;;
-	"aux")	python3 -u aux.py ;;
 	"bash")	exec /bin/bash ;;
 	"help") help_msg ;;
 	*)		help_msg 'error' ;;
