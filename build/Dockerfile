@@ -48,6 +48,8 @@ COPY external/models /app/models
 COPY external/cache /root
 
 # Clone git repo
+# The ARG command is here to force the cloning
+ARG GIT_SHA
 COPY external/github-key /
 RUN chmod 600 /github-key \
  && echo "IdentityFile /github-key" >> /etc/ssh/ssh_config \
@@ -63,7 +65,6 @@ ENTRYPOINT ["/app/praetorian-backend/build/entrypoint.sh"]
 # Set labels according to Label Schema Convention
 # http://label-schema.org/rc1/
 ARG BUILD_DATE
-ARG GIT_SHA
 LABEL maintainer "Antonios Karteris <akarteris@microlab.ntua.gr>"
 LABEL org.label-schema.build-date $BUILD_DATE
 LABEL org.label-schema.name "Praetorian | WP6 T4 | Backend"
@@ -75,6 +76,6 @@ LABEL org.label-schema.vcs-ref $GIT_SHA
 LABEL org.label-schema.vendor "Institute of Communication and Computer Systems (ICCS)"
 LABEL org.label-schema.version "RC"
 LABEL org.label-schema.schema-version "1.0"
-LABEL org.label-schema.docker.cmd "docker run -d --name praetorian_backend --log-driver local --network host --gpus all -t uphilld/praetorian:backend"
-LABEL org.label-schema.docker.cmd.devel "docker run -it --name praetorian_backend_devel --log-driver local --network host -t uphilld/praetorian:backend"
-LABEL org.label-schema.docker.cmd.help "docker exec $CONTAINER /bin/bash /app/entrypoint.sh help"
+LABEL org.label-schema.docker.cmd "docker run -dit --gpus all --log-driver local --name praetorian_backend --network host --restart unless-stopped uphilld/praetorian:backend"
+#LABEL org.label-schema.docker.cmd.devel "docker run -it --name praetorian_backend_devel --log-driver local --network host -t uphilld/praetorian:backend"
+#LABEL org.label-schema.docker.cmd.help "docker exec $CONTAINER /bin/bash /app/entrypoint.sh help"
