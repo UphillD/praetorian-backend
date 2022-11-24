@@ -54,7 +54,7 @@ COPY external/github-key /
 RUN chmod 600 /github-key \
  && echo "IdentityFile /github-key" >> /etc/ssh/ssh_config \
  && echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config \
- && git clone git@github.com:UphillD/praetorian-backend.git
+ && git clone --depth 1 git@github.com:UphillD/praetorian-backend.git
 
 # Set timezone
 ENV TZ="Europe/Athens"
@@ -63,7 +63,7 @@ ENV TZ="Europe/Athens"
 ENTRYPOINT ["/app/praetorian-backend/build/entrypoint.sh"]
 
 # Set healthcheck
-HEALTHCHECK --timeout=5s --start-period=60s CMD /bin/bash -c "[ -f /app/ready ]"
+HEALTHCHECK --interval=10s --timeout=5s --start-period=60s --retries=5 CMD /bin/bash -c "[ -f /app/ready ]"
 
 # Set labels according to Label Schema Convention
 # http://label-schema.org/rc1/
