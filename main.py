@@ -12,6 +12,7 @@ import time
 import keras
 import nlu
 import requests
+import touch
 
 from common import config
 from common import iop
@@ -52,6 +53,7 @@ if __name__ == '__main__':
 	image_model = None
 
 	logger.info('Process ready to start.')
+	touch.touch('/app/ready')
 
 	status = iop.get_status()
 	# inf loop

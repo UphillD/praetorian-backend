@@ -62,6 +62,9 @@ ENV TZ="Europe/Athens"
 # Set entrypoint
 ENTRYPOINT ["/app/praetorian-backend/build/entrypoint.sh"]
 
+# Set healthcheck
+HEALTHCHECK --timeout=5s --start-period=60s CMD /bin/bash -c "[ -f /app/ready ]"
+
 # Set labels according to Label Schema Convention
 # http://label-schema.org/rc1/
 ARG BUILD_DATE
@@ -77,5 +80,5 @@ LABEL org.label-schema.vendor "Institute of Communication and Computer Systems (
 LABEL org.label-schema.version "RC"
 LABEL org.label-schema.schema-version "1.0"
 LABEL org.label-schema.docker.cmd "docker run -dit --gpus all --log-driver local --name praetorian_backend --network host --restart unless-stopped uphilld/praetorian:backend"
-#LABEL org.label-schema.docker.cmd.devel "docker run -it --name praetorian_backend_devel --log-driver local --network host -t uphilld/praetorian:backend"
-#LABEL org.label-schema.docker.cmd.help "docker exec $CONTAINER /bin/bash /app/entrypoint.sh help"
+LABEL org.label-schema.docker.cmd.devel "docker exec -it praetorian_backend /bin/bash"
+LABEL org.label-schema.docker.cmd.help "docker exec -it praetorian_backend /app/praetorian-backend/build/entrypoint.sh help"

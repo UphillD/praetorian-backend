@@ -14,22 +14,11 @@ function help_msg () {
 		echo -e 'Non standard arguments detected.'
 	fi
 	echo -e 'Usage:'
-	echo -e '\t docker run [OPTIONS] --name praetorian_backend --log-driver local --network host -t uphilld/praetorian:backend [ARGUMENT]'
+	echo -e '\t docker run -dit --gpus all --log-driver local --name praetorian_backend --network host --restart unless-stopped uphilld/praetorian:backend'
 	echo -e ''
-	echo -e 'Options:'
-	echo -e '\t -d      launches the container in background mode'
-	echo -e '\t -it     launches the container in interactive mode'
-	echo -e 'Arguments:'
-	echo -e '\t(none)   launches both modules'
-	echo -e '\t main    launches the main module'
-	echo -e '\t bash    launches an instance of bash'
-	echo -e '\t help    prints this help message'
-	echo -e ''
-	echo -e 'Please note that the -it option is required if any argument is present.'
-	echo -e 'If you just wish to launch everything normally in the background, run this:'
-	echo -e '\t docker run -d --name praetorian_backend --log-driver local --network host -t uphilld/praetorian:backend'
-	echo -e 'and if you wish to see the logs of the container, run this:'
+	echo -e 'Print log:'
 	echo -e '\t docker logs praetorian_backend'
+	echo -e ''
 }
 
 # Launch all (no arguments)
@@ -38,7 +27,6 @@ if [ $# -eq 0 ]; then
 # Conditional launch (one argument)
 elif [ $# -eq 1 ]; then
 	case "$1" in
-	"main")	python3 -u main.py ;;
 	"bash")	exec /bin/bash ;;
 	"help") help_msg ;;
 	*)		help_msg 'error' ;;

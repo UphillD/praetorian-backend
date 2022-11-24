@@ -8,6 +8,7 @@ loguru
 oauthlib==3.2.0
 requests==2.27.0
 requests-oauthlib
+touch
 tweepy
 # Image classification
 opencv-python
