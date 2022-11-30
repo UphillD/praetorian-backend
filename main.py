@@ -97,7 +97,7 @@ if __name__ == '__main__':
 						logger.info('Crawling rule matched: {}.'.format(rule['tag']))
 					# Classify tweet as pertinent or not
 					classification, annotated_text, matched_identifiers = classifyTweet(tweet, identifiers, text_model, image_model)
-					if classification:
+					if classification == 'low' or classification == 'high':
 						for identifier in matched_identifiers:
 							logger.info('CI identifier matched: {}.'.format(identifier))
 						cnt[b] += 1
@@ -108,14 +108,17 @@ if __name__ == '__main__':
 						tweet['data']['text'] = tweet['data']['text'].replace('Disclaimer: This tweet contains false information.', '')
 						tweet['data']['text_annotated'] = annotated_text
 						tweet['data']['url'] = 'https://twitter.com/' + tweet['includes']['users'][0]['username'] + '/status/' + tweet['data']['id']
-						payload = json.dumps({ 'tweet': tweet, 'text': annotated_text, 'collection': tag_tweets })
-						r = requests.post(config.urls['iop']['socialMedia'], data=payload, params=config.query, headers=config.headers)
-						try:
-							r.raise_for_status()
-						except:
-							logger.error('Failed registering tweet on IOP (HTTP {}): {}'.format(r.status_code, r.text))
-						else:
-							logger.info('Pertinent tweet registered on IOP.')
+						payload = json.dumps({ 'tweet': tweet, 'text': annotated_text, 'priority': classification, 'collection': tag_tweets })
+						success = False
+						while not success:
+							try:
+								r = requests.post(config.urls['iop']['socialMedia'], data=payload, params=config.query, headers=config.headers)
+								r.raise_for_status()
+							except:
+								logger.error('Failed registering tweet on IOP (HTTP {}): {}'.format(r.status_code, r.text))
+							else:
+								logger.info('Pertinent tweet registered on IOP.')
+								success = True
 					logger.info('{} tweets crawled, of which {} identified as pertinent'.format(cnt[a], cnt[b]))
 				# Recheck running flag
 				next_status = iop.get_status()

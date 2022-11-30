@@ -17,7 +17,7 @@ b = 1
 def classifyTweet(tweet, identifiers, _, __):
 
 	# Initialize found flag
-	found = False
+	found = 'none'
 
 	# DATA EXTRACTION
 	# Get tweet text and location (if present)
@@ -42,13 +42,13 @@ def classifyTweet(tweet, identifiers, _, __):
 	for identifier in identifiers:
 		if identifier['value'].casefold() in clean_text_list:
 			text = text.replace(identifier['value'], '&' + identifier['value'] + '&')
-			found = True
+			found = identifier['priority']
 			ids.append(identifier['value'])
 
 	# Check location for identifiers
 	if location:
 		location_stringified = (' '.join(list(location.values()))).casefold()
 		if any(identifier['value'].casefold() in location_stringified for identifier in identifiers):
-			found = True
+			found = identifier['priority']
 
 	return(found, text, ids)

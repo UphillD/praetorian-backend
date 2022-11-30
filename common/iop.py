@@ -52,7 +52,7 @@ def get_identifiers(tag):
 	identifiers = []
 	for element in r.json()['data']:
 		if 'collection' in element and element['collection'] == tag:
-			identifiers.append({'value': element['value'], 'type': element['type']})
+			identifiers.append({'value': element['value'], 'type': element['type'], 'priority': element['priority']})
 	if not identifiers:
 		logger.error('No identifiers found in the IOP.')
 		sys.exit(-1)
