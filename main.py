@@ -23,14 +23,22 @@ from common import twitter
 # Initializes text classifier (NLU)
 def init_text_classifier():
 	time_start = time.perf_counter()
-	model = nlu.load(path=config.text_model_path)
+	try:
+		model = nlu.load(path=config.text_model_path)
+	except Exception as e:
+		logger.error('Failed to load text classification model: {}.'.format(e))
+		sys.exit(config.exit_codes['misc']['file_missing'])
 	logger.success('Text classification model loaded in {:.2f} seconds.'.format(time.perf_counter() - time_start))
 	return(model)
 
 # Initializes image classifier (Keras)
 def init_image_classifier():
 	time_start = time.perf_counter()
-	model = keras.models.load_model(config.image_model_path)
+	try:
+		model = keras.models.load_model(config.image_model_path)
+	except Exception as e:
+		logger.error('Failed to load image classification model: {}.'.format(e))
+		sys.exit(config.exit_codes['misc']['file_missing'])
 	logger.success('Image classification model loaded in {:.2f} seconds.'.format(time.perf_counter() - time_start))
 	return(model)
 
@@ -85,7 +93,7 @@ if __name__ == '__main__':
 				r.raise_for_status()
 			except:
 				logger.error('Failed initiating twitter stream (HTTP {}): {}'.format(r.status_code, r.text))
-				sys.exit(-1)
+				sys.exit(config.exit_codes['twitter']['get_stream'])
 			logger.success('Initiating twitter stream...')
 			# Stream, each line is a tweet
 			for line in r.iter_lines():

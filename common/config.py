@@ -69,3 +69,12 @@ headers = {'content-type': 'application/json'}
 ######
 text_model_path = '/app/models/xx.embed_sentence.labse'
 image_model_path = '/app/models/resnet50v2'
+
+##############
+# Exit Codes #
+##############
+exit_codes = {
+	'twitter'	:	{ 'get' : -21, 'post' : -22, 'get_stream' : -25, 'auth' : -29 },
+	'iop'		:	{ 'get' : -31 },
+	'misc'		:	{ 'missing_credentials' : -41, 'missing_file' : -42, 'no_rules' : -43, 'no_identifiers' : -44 }
+}

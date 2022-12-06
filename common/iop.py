@@ -26,7 +26,7 @@ def get_rules(tag):
 		r.raise_for_status()
 	except:
 		logger.error('Query failed (HTTP {}): {}.'.format(r.status_code, r.text))
-		sys.exit(-1)
+		sys.exit(config.exit_codes['iop']['get'])
 	# Generate list of rules
 	query_rules = []
 	for element in r.json()['data']:
@@ -34,7 +34,7 @@ def get_rules(tag):
 			query_rules.append({'value': element['value'], 'tag': element['tag']})
 	if not query_rules:
 		logger.error('No rules found in the IOP.')
-		sys.exit(-1)
+		sys.exit(config.exit_codes['misc']['no_rules'])
 	logger.success('{} rules received from IOP.'.format(len(query_rules)))
 	return(query_rules)
 
@@ -47,7 +47,7 @@ def get_identifiers(tag):
 		r.raise_for_status()
 	except:
 		logger.error('Query failed (HTTP {}): {}.'.format(r.status_code, r.text))
-		sys.exit(-1)
+		sys.exit(config.exit_codes['iop']['get'])
 	# Generate list of identifiers
 	identifiers = []
 	for element in r.json()['data']:
@@ -55,7 +55,7 @@ def get_identifiers(tag):
 			identifiers.append({'value': element['value'], 'type': element['type'], 'priority': element['priority']})
 	if not identifiers:
 		logger.error('No identifiers found in the IOP.')
-		sys.exit(-1)
+		sys.exit(config.exit_codes['misc']['no_identifiers'])
 	logger.success('{} CI identifiers received from IOP.'.format(len(identifiers)))
 	return(identifiers)
 

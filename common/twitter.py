@@ -25,14 +25,14 @@ def bearer_oauth(r):
 	bearer_token = os.getenv('TWITTER_BEARER_TOKEN')
 	if not bearer_token:
 		logger.error('Failed to grab bearer token from environment variable.')
-		sys.exit(-1)
+		sys.exit(config.exit_codes['misc']['missing_credentials'])
 	# Fill the headers
 	try:
 		r.headers['Authorization'] = f'Bearer {bearer_token}'
 		r.headers['User-Agent'] = 'v2FilteredStreamPython'
 	except Exception as e:
 		logger.error('Error during authentication: {}.'.format(str(e)))
-		sys.exit(-1)
+		sys.exit(config.exit_codes['twitter']['auth'])
 	#logger.success('Returning authentication object.')
 	return(r)
 
@@ -77,7 +77,7 @@ def set_rules(rules):
 		r.raise_for_status()
 	except:
 		logger.error('Query failed (HTTP {}): {}'.format(r.status_code, r.text))
-		sys.exit(-1)
+		sys.exit(config.exit_codes['twitter']['post'])
 	logger.success('{} new rules set on Twitter.'.format(str(r.json()['meta']['summary']['created'])))
 	return(r.json())
 
