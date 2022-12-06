@@ -14,7 +14,7 @@ function help_msg () {
 		echo -e 'Non standard arguments detected.'
 	fi
 	echo -e 'Usage:'
-	echo -e '\t docker run -dit --gpus all --log-driver local --name praetorian_backend --network host --restart unless-stopped uphilld/praetorian:backend'
+	echo -e '\t docker run -dit --env LOADML="true" --env-file credentials.env --gpus all --log-driver local --name praetorian_backend --network host --restart unless-stopped uphilld/praetorian:backend'
 	echo -e ''
 	echo -e 'Print log:'
 	echo -e '\t docker logs praetorian_backend'

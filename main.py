@@ -7,6 +7,8 @@
 
 import array
 import json
+import os
+import sys
 import time
 
 import keras
@@ -55,10 +57,8 @@ if __name__ == '__main__':
 	cnt = array.array('H', [0, 0, 0, 0])
 
 	# Initialize classification models
-	#text_model = init_text_classifier()
-	text_model = None
-	#image_model = init_image_classifier()
-	image_model = None
+	text_model = init_text_classifier() if os.getenv('LOADML') else None
+	image_model = init_image_classifier() if os.getenv('LOADML') else None
 
 	logger.info('Process ready to start.')
 	touch.touch('/app/ready')
