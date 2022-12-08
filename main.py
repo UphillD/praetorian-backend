@@ -94,7 +94,7 @@ if __name__ == '__main__':
 
 		if not status:
 			time.sleep(1)
-			status = iop.get_status()
+			status = iop.get_status(status)
 		else:
 			if status == 'SMSTD':
 				from common.SMSTD import *
@@ -146,7 +146,7 @@ if __name__ == '__main__':
 						iop.register_tweet(payload)
 					logger.info('{} tweets crawled, of which {} identified as pertinent'.format(cnt[a], cnt[b]))
 				# Recheck running flag
-				next_status = iop.get_status()
+				next_status = iop.get_status(status)
 				if status != next_status:
 					status = next_status
 					logger.info('Process stopped, idling...')

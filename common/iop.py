@@ -24,7 +24,7 @@ config.read('/app/praetorian-backend/config.ini')
 appID = os.getenv('IOP_APPID')
 keyID = os.getenv('IOP_KEYID')
 if not appID or not keyID:
-	logger.error('Failed to get twitter credentials from environment variables')
+	logger.error('Failed to get twitter credentials from environment variables.')
 	sys.exit(config['Exit Codes']['missing_credentials']
 query_params = { 'appId' : appID, 'keyId' : keyID }
 headers = {'content-type': 'application/json'}
@@ -49,7 +49,7 @@ def get_rules(tag):
 			query_rules.append({'value': element['value'], 'tag': element['tag']})
 	if not query_rules:
 		logger.error('No rules found in the IOP.')
-		sys.exit(config['Exit Codes']['no_rules'])
+		sys.exit(config['Exit Codes']['missing_rules'])
 	logger.success('{} rules received from IOP.'.format(len(query_rules)))
 	return(query_rules)
 
@@ -60,7 +60,7 @@ def get_identifiers(tag):
 	try:
 		r.raise_for_status()
 	except:
-		logger.error('Query failed (HTTP {}): {}.'.format(r.status_code))
+		logger.error('Query failed (HTTP {}).'.format(r.status_code))
 		logger.error('Message: {}.'.format(r.text))
 		sys.exit(config['Exit Codes']['iop_get'])
 	# Generate list of identifiers
@@ -70,10 +70,11 @@ def get_identifiers(tag):
 			identifiers.append({'value': element['value'], 'type': element['type'], 'priority': element['priority']})
 	if not identifiers:
 		logger.error('No identifiers found in the IOP.')
-		sys.exit(config['Exit Codes']['no_identifiers'])
+		sys.exit(config['Exit Codes']['missing_identifiers'])
 	logger.success('{} CI identifiers received from IOP.'.format(len(identifiers)))
 	return(identifiers)
 
+# Registers tweet on the IOP
 def register_tweet(payload):
 	logger.log('COMM', 'Registering the tweet on the IOP...')
 	while True:
@@ -89,11 +90,12 @@ def register_tweet(payload):
 			return(True)
 
 # Gets status flag from IOP
-def get_status():
-	r = requests.get(config['URLs']['iop']['socialMedia'] + config['IOP']['status_flag_key'], params=query_params)
+def get_status(previous_status):
+	r = requests.get(config['URLs']['iop_socialMedia'] + config['IOP']['status_flag_key'], params=query_params)
 	try:
 		r.raise_for_status()
 	except:
-		logger.error('Failed to get status flag from IOP (HTTP {}): {}'.format(r.status_code))
+		logger.error('Failed to get status flag from IOP (HTTP {}).'.format(r.status_code))
 		logger.error('Message: {}.'.format(r.text))
+		return(previous_status)
 	return(r.json()['data']['value'])
