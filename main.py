@@ -34,7 +34,7 @@ def init_text_classifier():
 	except Exception as e:
 		logger.error('Failed to load text classification model.')
 		logger.error('Exception: {}.'.format(e))
-		sys.exit(config['Exit Codes']['missing_file'])
+		sys.exit(config['Exit Codes'].getint('missing_file'))
 	logger.success('Text classification model loaded in {:.2f} seconds.'.format(time.perf_counter() - time_start))
 	return(model)
 
@@ -46,7 +46,7 @@ def init_image_classifier():
 	except Exception as e:
 		logger.error('Failed to load image classification model.')
 		logger.error('Exception: {}.'.format(e))
-		sys.exit(config['Exit Codes']['missing_file'])
+		sys.exit(config['Exit Codes'].getint('missing_file'))
 	logger.success('Image classification model loaded in {:.2f} seconds.'.format(time.perf_counter() - time_start))
 	return(model)
 
@@ -105,7 +105,7 @@ if __name__ == '__main__':
 				from common.CO import *
 			else:
 				logger.error('Received false status flag from IOP: {}.'.format(status))
-				sys.exit(config['Exit Codes']['false_status'])
+				sys.exit(config['Exit Codes'].getint('false_status'))
 			logger.info('{} process starting...'.format(status))
 			# Get current rules from IOP
 			rules = iop.get_rules(tag_rules)
@@ -125,7 +125,7 @@ if __name__ == '__main__':
 			except:
 				logger.error('Failed initiating twitter stream (HTTP {}).'.format(r.status_code))
 				logger.error('Message: {}.'.format(r.text))
-				sys.exit(config['Exit Codes']['twitter_get_stream'])
+				sys.exit(config['Exit Codes'].getint('twitter_get_stream'))
 			logger.success('Initiating twitter stream...')
 			# Stream, each line is a tweet
 			for line in r.iter_lines():

@@ -25,13 +25,13 @@ appID = os.getenv('IOP_APPID')
 keyID = os.getenv('IOP_KEYID')
 if not appID or not keyID:
 	logger.error('Failed to get twitter credentials from environment variables.')
-	sys.exit(config['Exit Codes']['missing_credentials'])
+	sys.exit(config['Exit Codes'].getint('missing_credentials'))
 query_params = { 'appId' : appID, 'keyId' : keyID }
 headers = {'content-type': 'application/json'}
 
 # Initialize requests session with retries
 session = requests.Session()
-retries = requests.adapters.Retry(total=config['IOP']['max_retries'], backoff_factor=config['IOP']['backoff_factor'], status_forcelist=tuple(range(400, 600)))
+retries = requests.adapters.Retry(total=config['IOP'].getint('max_retries'), backoff_factor=config['IOP'].getint('backoff_factor'), status_forcelist=tuple(range(400, 600)))
 session.mount('https://', requests.adapters.HTTPAdapter(max_retries=retries))
 
 ###############
@@ -40,7 +40,7 @@ session.mount('https://', requests.adapters.HTTPAdapter(max_retries=retries))
 # Gets crawling rules from the IOP
 def get_rules(tag):
 	logger.log('COMM', 'Quering the IOP for crawling rules...')
-	r = session.get(config['URLs']['iop_socialMedia'], params=query_params, timeout=config['IOP']['timeout'])
+	r = session.get(config['URLs']['iop_socialMedia'], params=query_params, timeout=config['IOP'].getint('timeout'))
 	try:
 		r.raise_for_status()
 	except:
@@ -54,14 +54,14 @@ def get_rules(tag):
 			query_rules.append({'value': element['value'], 'tag': element['tag']})
 	if not query_rules:
 		logger.error('No rules found in the IOP.')
-		sys.exit(config['Exit Codes']['missing_rules'])
+		sys.exit(config['Exit Codes'].getint('missing_rules'))
 	logger.success('{} rules received from IOP.'.format(len(query_rules)))
 	return(query_rules)
 
 # Gets CI identifiers from the IOP
 def get_identifiers(tag):
 	logger.log('COMM', 'Quering the IOP for CI identifiers...')
-	r = session.get(config['URLs']['iop_socialMedia'], params=query_params, timeout=config['IOP']['timeout'])
+	r = session.get(config['URLs']['iop_socialMedia'], params=query_params, timeout=config['IOP'].getint('timeout'))
 	try:
 		r.raise_for_status()
 	except:
@@ -75,7 +75,7 @@ def get_identifiers(tag):
 			identifiers.append({'value': element['value'], 'type': element['type'], 'priority': element['priority']})
 	if not identifiers:
 		logger.error('No identifiers found in the IOP.')
-		sys.exit(config['Exit Codes']['missing_identifiers'])
+		sys.exit(config['Exit Codes'].getint('missing_identifiers'))
 	logger.success('{} CI identifiers received from IOP.'.format(len(identifiers)))
 	return(identifiers)
 
@@ -83,7 +83,7 @@ def get_identifiers(tag):
 def register_tweet(payload):
 	logger.log('COMM', 'Registering the tweet on the IOP...')
 	while True:
-		r = session.post(config['URLs']['iop_socialMedia'], data=payload, params=query_params, headers=headers, timeout=config['IOP']['timeout'])
+		r = session.post(config['URLs']['iop_socialMedia'], data=payload, params=query_params, headers=headers, timeout=config['IOP'].getint('timeout'))
 		try:
 			r.raise_for_status()
 		except:
@@ -96,7 +96,7 @@ def register_tweet(payload):
 
 # Gets status flag from IOP
 def get_status(previous_status):
-	r = session.get(config['URLs']['iop_socialMedia'] + config['IOP']['key'], params=query_params, timeout=config['IOP']['timeout'])
+	r = session.get(config['URLs']['iop_socialMedia'] + config['IOP']['key'], params=query_params, timeout=config['IOP'].getint('timeout'))
 	try:
 		r.raise_for_status()
 	except:
