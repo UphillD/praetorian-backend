@@ -3,7 +3,7 @@
 # Work Package 6	:	Response Coordination
 # Task 4			:	Integration with Social Media
 # ~~~~~~~~~~~~~~~~~~~~
-# Main process (SMSTD & CO)
+# Main process
 
 import array
 import json
@@ -68,7 +68,10 @@ if __name__ == '__main__':
 	# Configure loguru
 	logger.level('COMM', no=15, color='<magenta>', icon='📡')
 	logger.level('BYE', no=15, color='<fg #808080>', icon='🚪')
-	logger.configure(handlers=[dict(sink=sys.stderr, colorize=True, format=config['Loguru']['format'])])
+	logger.configure(handlers=[
+		dict(sink=sys.stderr, colorize=True, format=config['Loguru']['format']),
+		dict(sink=open('/app/main.log', 'w'), colorize=True, format=config['Loguru']['format'])
+	])
 
 	# Initialize tweet counter array
 	# SMSTD Crawled | SMSTD Suspicious | CO Crawled | CO Informative
@@ -100,6 +103,9 @@ if __name__ == '__main__':
 				from common.SMSTD import *
 			elif status == 'CO':
 				from common.CO import *
+			else:
+				logger.error('Received false status flag from IOP: {}.'.format(status))
+				sys.exit(config['Exit Codes']['false_status'])
 			logger.info('{} process starting...'.format(status))
 			# Get current rules from IOP
 			rules = iop.get_rules(tag_rules)
@@ -130,8 +136,8 @@ if __name__ == '__main__':
 					for rule in tweet['matching_rules']:
 						logger.info('Crawling rule matched: {}.'.format(rule['tag']))
 					# Classify tweet as pertinent or not
-					classification, annotated_text, matched_identifiers = classifyTweet(tweet, identifiers, text_model, image_model)
-					if classification == 'low' or classification == 'high':
+					classification, priority, annotated_text, matched_identifiers = classifyTweet(tweet, identifiers, text_model, image_model)
+					if classification:
 						for identifier in matched_identifiers:
 							logger.info('CI identifier matched: {}.'.format(identifier))
 						cnt[b] += 1
@@ -142,7 +148,7 @@ if __name__ == '__main__':
 						tweet['data']['text'] = tweet['data']['text'].replace('Disclaimer: This tweet contains false information.', '')
 						tweet['data']['text_annotated'] = annotated_text
 						tweet['data']['url'] = 'https://twitter.com/' + tweet['includes']['users'][0]['username'] + '/status/' + tweet['data']['id']
-						payload = json.dumps({ 'tweet': tweet, 'text': annotated_text, 'priority': classification, 'collection': tag_tweets })
+						payload = json.dumps({ 'tweet': tweet, 'text': annotated_text, 'priority': priority, 'collection': tag_tweets })
 						iop.register_tweet(payload)
 					logger.info('{} tweets crawled, of which {} identified as pertinent'.format(cnt[a], cnt[b]))
 				# Recheck running flag

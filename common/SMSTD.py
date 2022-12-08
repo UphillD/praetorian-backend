@@ -13,18 +13,27 @@ tag_tweets = 'TD_tweets'
 a = 0
 b = 1
 
-# Classifies tweet as suspicious, returns boolean classification & annotated tweet text
+#############################
+## CLASSIFICATION FUNCTION ##
+#############################
 def classifyTweet(tweet, identifiers, _, __):
 
-	# Initialize found flag
-	found = 'none'
+	####################
+	## INITIALIZATION ##
+	####################
+	classification = False
+	priority = 'none'
 
-	# DATA EXTRACTION
+	#####################
+	## DATA EXTRACTION ##
+	#####################
 	# Get tweet text and location (if present)
 	text = tweet['data']['text'].replace('Disclaimer: This tweet contains false information.', '')
-	location = (tweet['includes']['places'][0] if 'places' in tweet['includes'] else None)
+	location = tweet['includes']['places'][0] if 'places' in tweet['includes'] else None
 
-	# TAGGING
+	#############
+	## TAGGING ##
+	#############
 	# Surround words matching crawling rules with '$'
 	already_tagged = []
 	for rule in tweet['matching_rules']:
@@ -36,19 +45,24 @@ def classifyTweet(tweet, identifiers, _, __):
 	# Clean up text and put it in a list
 	clean_text_list = text.casefold().translate(str.maketrans('', '', string.punctuation)).split()
 
-	# CLASSIFICATION
+	####################
+	## CLASSIFICATION ##
+	####################
 	# Check text for identifiers, surround words matching identifiers with '&'
 	ids = []
 	for identifier in identifiers:
 		if identifier['value'].casefold() in clean_text_list:
 			text = text.replace(identifier['value'], '&' + identifier['value'] + '&')
-			found = identifier['priority']
 			ids.append(identifier['value'])
+			classification = True
+			priority = identifier['priority']
 
 	# Check location for identifiers
 	if location:
 		location_stringified = (' '.join(list(location.values()))).casefold()
 		if any(identifier['value'].casefold() in location_stringified for identifier in identifiers):
-			found = identifier['priority']
+			ids.append(identifier['value'])
+			classification = True
+			priority = identifier['priority']
 
-	return(found, text, ids)
+	return(classification, priority, text, ids)

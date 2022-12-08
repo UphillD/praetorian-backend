@@ -10,8 +10,8 @@ import sys
 
 import requests
 
-from loguru import logger
 from configparser import ConfigParser
+from loguru import logger
 
 ####################
 ## INITIALIZATION ##
@@ -89,5 +89,5 @@ def set_rules(rules):
 		logger.error('Query failed (HTTP {})'.format(r.status_code))
 		logger.error('Message: {}.'.format(r.text))
 		sys.exit(config['Exit Codes']['twitter_post'])
-	logger.success('{} new rules set on Twitter.'.format(str(r.json()['meta']['summary']['created'])))
+	logger.success('{} new rules set on Twitter.'.format(r.json()['meta']['summary']['created']))
 	return(r.json())
