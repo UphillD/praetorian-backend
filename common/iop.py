@@ -29,13 +29,18 @@ if not appID or not keyID:
 query_params = { 'appId' : appID, 'keyId' : keyID }
 headers = {'content-type': 'application/json'}
 
+# Initialize requests session with retries
+session = requests.Session()
+retries = requests.adapters.Retry(total=config['IOP']['max_retries'], backoff_factor=config['IOP']['backoff_factor'], status_forcelist=tuple(range(400, 600)))
+session.mount('https://', requests.adapters.HTTPAdapter(max_retries=retries))
+
 ###############
 ## FUNCTIONS ##
 ###############
 # Gets crawling rules from the IOP
 def get_rules(tag):
 	logger.log('COMM', 'Quering the IOP for crawling rules...')
-	r = requests.get(config['URLs']['iop_socialMedia'], params=query_params)
+	r = session.get(config['URLs']['iop_socialMedia'], params=query_params, timeout=config['IOP']['timeout'])
 	try:
 		r.raise_for_status()
 	except:
@@ -56,7 +61,7 @@ def get_rules(tag):
 # Gets CI identifiers from the IOP
 def get_identifiers(tag):
 	logger.log('COMM', 'Quering the IOP for CI identifiers...')
-	r = requests.get(config['URLs']['iop_socialMedia'], params=query_params)
+	r = session.get(config['URLs']['iop_socialMedia'], params=query_params, timeout=config['IOP']['timeout'])
 	try:
 		r.raise_for_status()
 	except:
@@ -78,7 +83,7 @@ def get_identifiers(tag):
 def register_tweet(payload):
 	logger.log('COMM', 'Registering the tweet on the IOP...')
 	while True:
-		r = requests.post(config['URLs']['iop_socialMedia'], data=payload, params=query_params, headers=headers)
+		r = session.post(config['URLs']['iop_socialMedia'], data=payload, params=query_params, headers=headers, timeout=config['IOP']['timeout'])
 		try:
 			r.raise_for_status()
 		except:
@@ -91,7 +96,7 @@ def register_tweet(payload):
 
 # Gets status flag from IOP
 def get_status(previous_status):
-	r = requests.get(config['URLs']['iop_socialMedia'] + config['IOP']['status_flag_key'], params=query_params)
+	r = session.get(config['URLs']['iop_socialMedia'] + config['IOP']['key'], params=query_params, timeout=config['IOP']['timeout'])
 	try:
 		r.raise_for_status()
 	except:
