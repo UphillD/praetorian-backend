@@ -79,6 +79,6 @@ LABEL org.label-schema.vcs-ref $GIT_SHA
 LABEL org.label-schema.vendor "Institute of Communication and Computer Systems (ICCS)"
 LABEL org.label-schema.version "RC"
 LABEL org.label-schema.schema-version "1.0"
-LABEL org.label-schema.docker.cmd "docker run -dit --gpus all --log-driver local --name praetorian_backend --network host --restart unless-stopped uphilld/praetorian:backend"
+LABEL org.label-schema.docker.cmd "docker run -dit [--env LOADML='true'] --env-file credentials.env [--gpus all] --log-driver local --name praetorian_backend --network host --restart unless-stopped uphilld/praetorian:backend"
 LABEL org.label-schema.docker.cmd.devel "docker exec -it praetorian_backend /bin/bash"
 LABEL org.label-schema.docker.cmd.help "docker exec -it praetorian_backend /app/praetorian-backend/build/entrypoint.sh help"

@@ -17,6 +17,7 @@ This work makes up the **backend** of the system developed by ICCS for the Task 
 ## Table of Contents
 1. [System](#Modules)
 1. [Usage](#Usage)
+1. [Exit Codes](#Exit-Codes)
 1. [Technologies Used](#Technologies-Used)
 1. [Project Tree](#Project-Tree)
 1. [Miscellaneous](#Miscellaneous)
@@ -48,11 +49,28 @@ who can then optionally edit it and post it.
 
 **Launch:**
 
-`docker run -d --name praetorian_backend --log-driver local --network host -t uphilld/praetorian:backend`
+`docker run -dit [--env LOADML="true"] --env-file credentials.env [--gpus all] --log-driver local --name praetorian_backend --network host --restart unless-stopped uphilld/praetorian:backend`
+
+**Print Logs:**
+
+`docker logs praetorian_backend`
 
 **Print help:**
 
-`docker run -it --name praetorian_backend --log-driver local --network host -t uphilld/praetorian:backend help`
+`docker exec -it praetorian_backend /app/praetorian-backend/build/entrypoint.sh help`
+
+## Exit Codes
+
+This dockerized project utilizes exit codes to assist in identifying potential issues:
+
+	-2 : Error during POST request on Twitter
+	-3 : Error during GET request (stream) on Twitter
+	-4 : Error during GET request on IOP
+	-5 : Error while loading credentials
+	-6 : Error while reading file
+	-7 : Error while reading crawling rules on IOP
+	-8 : Error while reading CI identifiers on IOP
+	-9 : Error while receiving status flag from IOP
 
 ## Technologies Used
 
@@ -66,8 +84,11 @@ who can then optionally edit it and post it.
 
     $root
     ├ build
-    │    ├ 🔒 credentials.env
-    │    └ 🔒 models
+    │    └ 🔒 external
+    │         ├ 📁 cache
+    │         ├ 📁 models
+    │         ├ credentials.env
+    │         └ github-key
     ├ common
     └ docs
 
