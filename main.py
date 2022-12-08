@@ -16,20 +16,25 @@ import nlu
 import requests
 import touch
 
-from common import config
+from configparser import ConfigParser
+from loguru import logger
+
 from common import iop
 from common import twitter
 
 
-
+###############################
+## CLASSIFIER INITIALIZATION ##
+###############################
 # Initializes text classifier (NLU)
 def init_text_classifier():
 	time_start = time.perf_counter()
 	try:
-		model = nlu.load(path=config.text_model_path)
+		model = nlu.load(path=config['Models']['text_model_path'])
 	except Exception as e:
-		logger.error('Failed to load text classification model: {}.'.format(e))
-		sys.exit(config.exit_codes['misc']['file_missing'])
+		logger.error('Failed to load text classification model.')
+		logger.error('Exception: {}.'.format(e))
+		sys.exit(config['Exit Codes']['missing_file'])
 	logger.success('Text classification model loaded in {:.2f} seconds.'.format(time.perf_counter() - time_start))
 	return(model)
 
@@ -37,19 +42,33 @@ def init_text_classifier():
 def init_image_classifier():
 	time_start = time.perf_counter()
 	try:
-		model = keras.models.load_model(config.image_model_path)
+		model = keras.models.load_model(config['Models']['image_model_path'])
 	except Exception as e:
-		logger.error('Failed to load image classification model: {}.'.format(e))
-		sys.exit(config.exit_codes['misc']['file_missing'])
+		logger.error('Failed to load image classification model.')
+		logger.error('Exception: {}.'.format(e))
+		sys.exit(config['Exit Codes']['missing_file'])
 	logger.success('Image classification model loaded in {:.2f} seconds.'.format(time.perf_counter() - time_start))
 	return(model)
 
-
-# MAIN
+###################
+## MAIN FUNCTION ##
+###################
 if __name__ == '__main__':
 
-	# Get logger configuration
-	logger = config.logger
+	###################
+	## CONFIGURATION ##
+	###################
+	# Read configuration file
+	config = ConfigParser()
+	config.read('/app/praetorian-backend/config.ini')
+
+	# Configure timezone
+	time.tzset()
+
+	# Configure loguru
+	logger.level('COMM', no=15, color='<magenta>', icon='📡')
+	logger.level('BYE', no=15, color='<fg #808080>', icon='🚪')
+	logger.configure(handlers=[dict(sink=sys.stderr, colorize=True, format=config['Loguru']['format'])])
 
 	# Initialize tweet counter array
 	# SMSTD Crawled | SMSTD Suspicious | CO Crawled | CO Informative
@@ -60,22 +79,28 @@ if __name__ == '__main__':
 	text_model = init_text_classifier() if os.getenv('LOADML') else None
 	image_model = init_image_classifier() if os.getenv('LOADML') else None
 
-	logger.info('Process ready to start.')
+	# Initialize status flag
+	status = False
+
+	# Touch healthcheck file
 	touch.touch('/app/ready')
 
-	status = iop.get_status()
-	# inf loop
+	logger.info('Process ready to start.')
+
+	###############
+	## MAIN LOOP ##
+	###############
 	while(True):
 
 		if not status:
 			time.sleep(1)
-			status = iop.get_status()
+			status = iop.get_status(status)
 		else:
 			if status == 'SMSTD':
 				from common.SMSTD import *
 			elif status == 'CO':
 				from common.CO import *
-			logger.info('{} process running...'.format(status))
+			logger.info('{} process starting...'.format(status))
 			# Get current rules from IOP
 			rules = iop.get_rules(tag_rules)
 			# Get old rules from twitter
@@ -85,15 +110,16 @@ if __name__ == '__main__':
 			# Set new rules on twitter
 			twitter.set_rules(rules)
 			# Get CI identifiers from IOP
-			identifiers = (iop.get_identifiers(tag_identifiers) if status == 'SMSTD' else None)
+			identifiers = iop.get_identifiers(tag_identifiers) if status == 'SMSTD' else None
 
 			# Initiate twitter stream
-			r = requests.get(config.urls['twitter']['stream'], auth=twitter.bearer_oauth, params=config.query_params, stream=True)
+			r = requests.get(config['URLs']['twitter_stream'], auth=twitter.bearer_oauth, params=twitter.query_params, stream=True)
 			try:
 				r.raise_for_status()
 			except:
-				logger.error('Failed initiating twitter stream (HTTP {}): {}'.format(r.status_code, r.text))
-				sys.exit(config.exit_codes['twitter']['get_stream'])
+				logger.error('Failed initiating twitter stream (HTTP {}).'.format(r.status_code))
+				logger.error('Message: {}.'.format(r.text))
+				sys.exit(config['Exit Codes']['twitter_get_stream'])
 			logger.success('Initiating twitter stream...')
 			# Stream, each line is a tweet
 			for line in r.iter_lines():
@@ -117,19 +143,10 @@ if __name__ == '__main__':
 						tweet['data']['text_annotated'] = annotated_text
 						tweet['data']['url'] = 'https://twitter.com/' + tweet['includes']['users'][0]['username'] + '/status/' + tweet['data']['id']
 						payload = json.dumps({ 'tweet': tweet, 'text': annotated_text, 'priority': classification, 'collection': tag_tweets })
-						success = False
-						while not success:
-							try:
-								r = requests.post(config.urls['iop']['socialMedia'], data=payload, params=config.query, headers=config.headers)
-								r.raise_for_status()
-							except:
-								logger.error('Failed registering tweet on IOP (HTTP {}): {}'.format(r.status_code, r.text))
-							else:
-								logger.info('Pertinent tweet registered on IOP.')
-								success = True
+						iop.register_tweet(payload)
 					logger.info('{} tweets crawled, of which {} identified as pertinent'.format(cnt[a], cnt[b]))
 				# Recheck running flag
-				next_status = iop.get_status()
+				next_status = iop.get_status(status)
 				if status != next_status:
 					status = next_status
 					logger.info('Process stopped, idling...')
