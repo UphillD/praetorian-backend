@@ -5,11 +5,13 @@
 # ~~~~~~~~~~~~~~~~~~~~
 # Main process
 
+import time
+t_start = time.perf_counter()
+
 import array
 import json
 import os
 import sys
-import time
 
 import keras
 import nlu
@@ -88,7 +90,9 @@ if __name__ == '__main__':
 	# Touch healthcheck file
 	touch.touch('/app/ready')
 
-	logger.info('Process ready to start.')
+	t_ready = time.perf_counter()
+	logger.info('Process initialized in {:.2f} seconds.'.format(t_ready - t_start))
+	logger.info('Process ready.')
 
 	###############
 	## MAIN LOOP ##
