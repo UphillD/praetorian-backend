@@ -57,7 +57,7 @@ def generate_tweet():
 	first_tweet = json.dumps({
 		'collection' : 'TD_tweets',
 		'priority' : 'low',
-		'text' : 'New Weaponized Android Apps With 1M Installs Steals 2FA Codes & Passwords',
+		'text' : 'New Weaponized &Android& Apps With 1M Installs $Steals$ 2FA Codes & $Passwords$',
 		'tweet': {
 			'data': {
 				'created_at': '2023-05-05T09:35:39.000Z',
