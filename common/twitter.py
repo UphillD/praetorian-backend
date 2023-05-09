@@ -52,8 +52,8 @@ def get_rules():
 	try:
 		r.raise_for_status()
 	except:
-		logger.warn('Query failed (HTTP {}).'.format(r.status_code))
-		logger.warn('Message: {}.'.format(r.text))
+		logger.warning('Query failed (HTTP {}).'.format(r.status_code))
+		logger.warning('Message: {}.'.format(r.text))
 		return(None)
 	logger.success('{} old rules received from Twitter.'.format(r.json()['meta']['result_count']))
 	return(r.json())
@@ -64,19 +64,19 @@ def delete_rules(rules):
 	try:
 		ids = list(map(lambda rule: rule['id'], rules['data']))
 	except:
-		logger.warn('No preexisting rules detected, skipping rule deletion.')
+		logger.warning('No preexisting rules detected, skipping rule deletion.')
 		return(None)
 	logger.log('COMM', 'Quering Twitter to delete current crawling rules...')
 	r = requests.post(config['URLs']['twitter_rules'], auth=bearer_oauth, json={ 'delete' : { 'ids' : ids } })
 	try:
 		r.raise_for_status()
 	except:
-		logger.warn('Query failed (HTTP {}).'.format(r.status_code))
-		logger.warn('Message: {}.'.format(r.text))
+		logger.warning('Query failed (HTTP {}).'.format(r.status_code))
+		logger.warning('Message: {}.'.format(r.text))
 		return(None)
 	logger.success('{} old rules deleted on Twitter.'.format(r.json()['meta']['summary']['deleted']))
 	if r.json()['meta']['summary']['not_deleted']:
-		logger.warn('{} old rules not deleted.'.format(r.json()['meta']['summary']['not_deleted']))
+		logger.warning('{} old rules not deleted.'.format(r.json()['meta']['summary']['not_deleted']))
 	return(r.json())
 
 # Sets new query rules
