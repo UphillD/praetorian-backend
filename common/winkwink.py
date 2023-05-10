@@ -57,18 +57,18 @@ def generate_tweet():
 	first_tweet = json.dumps({
 		'collection' : 'TD_tweets',
 		'priority' : 'low',
-		'text' : 'New Weaponized &Android& Apps With 1M Installs $Steals$ 2FA Codes & $Passwords$ https://t.co/xka6VxHevt #androidapps #cyber #cybersecurity #informationsecurity #$malware$ #android #playstore',
+		'text' : 'MSI $data breach$ just got even more concerning.\n\nHackers have leaked private code signing keys, including Intel Boot Guard, on the #DarkWeb, which could lead to further attacks.\nLearn more: https://t.co/xDRZZbvCmv #cybersecurity #informationsecurity',
 		'tweet': {
 			'data': {
-				'created_at': '2023-05-05T06:22:39.000Z',
-				'id': '1654371007094833152',
+				'created_at': '2023-05-09T07:04:25.000Z',
+				'id': '1656012157786669056',
 				'lang': 'en',
-				'text_annotated': 'New Weaponized &Android& Apps With 1M Installs $Steals$ 2FA Codes & $Passwords$',
-				'text': 'New Weaponized Android Apps With 1M Installs Steals 2FA Codes & Passwords',
-				'url': 'https://twitter.com/The_Cyber_News/status/1654371007094833152'
+				'text_annotated': 'MSI $data breach$ just got even more concerning.\n\nHackers have leaked private code signing keys, including Intel Boot Guard, on the #DarkWeb, which could lead to further attacks.\nLearn more: https://t.co/xDRZZbvCmv #cybersecurity #informationsecurity',
+				'text': 'MSI data breach just got even more concerning.\n\nHackers have leaked private code signing keys, including Intel Boot Guard, on the #DarkWeb, which could lead to further attacks.\nLearn more: https://t.co/xDRZZbvCmv #cybersecurity #informationsecurity',
+				'url': 'https://twitter.com/TheHackersNews/status/1656012157786669056'
 			},
 			'includes': {
-				'users': [{'id': '1165106855879704577', 'name': 'Cyber Security News', 'profile_image_url': 'https://pbs.twimg.com/profile_images/1174924326807592960/aJMuU6Ms_400x400.jpg', 'username': 'The_Cyber_News'}]
+				'users': [{'id': '209811713', 'name': 'The Hacker News', 'profile_image_url': 'https://pbs.twimg.com/profile_images/1597647879811657728/FLgHrLHy_400x400.jpg', 'username': 'TheHackerNews'}]
 			}
 		}
 	})
