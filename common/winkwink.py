@@ -57,13 +57,13 @@ def generate_tweet():
 	first_tweet = json.dumps({
 		'collection' : 'TD_tweets',
 		'priority' : 'low',
-		'text' : 'MSI $data breach$ just got even more concerning.\n\nHackers have leaked private code signing keys, including Intel Boot Guard, on the #DarkWeb, which could lead to further attacks.\nLearn more: https://t.co/xDRZZbvCmv #cybersecurity #informationsecurity',
+		'text' : 'MSI $data$ $breach$ just got even more concerning.\n\nHackers have leaked private code signing keys, including Intel Boot Guard, on the #DarkWeb, which could lead to further attacks.\nLearn more: https://t.co/xDRZZbvCmv #cybersecurity #informationsecurity',
 		'tweet': {
 			'data': {
 				'created_at': '2023-05-09T07:04:25.000Z',
 				'id': '1656012157786669056',
 				'lang': 'en',
-				'text_annotated': 'MSI $data breach$ just got even more concerning.\n\nHackers have leaked private code signing keys, including Intel Boot Guard, on the #DarkWeb, which could lead to further attacks.\nLearn more: https://t.co/xDRZZbvCmv #cybersecurity #informationsecurity',
+				'text_annotated': 'MSI $data$ $breach$ just got even more concerning.\n\nHackers have leaked private code signing keys, including Intel Boot Guard, on the #DarkWeb, which could lead to further attacks.\nLearn more: https://t.co/xDRZZbvCmv #cybersecurity #informationsecurity',
 				'text': 'MSI data breach just got even more concerning.\n\nHackers have leaked private code signing keys, including Intel Boot Guard, on the #DarkWeb, which could lead to further attacks.\nLearn more: https://t.co/xDRZZbvCmv #cybersecurity #informationsecurity',
 				'url': 'https://twitter.com/TheHackersNews/status/1656012157786669056'
 			},
