@@ -52,8 +52,29 @@ def register_tweet(payload):
 			logger.success('Tweet registered on IOP.')
 			return(True)
 
+def generate_1st_tweet():
+	first_tweet = json.dumps({
+		'collection' : 'TD_tweets',
+		'priority' : 'low',
+		'text' : 'New Weaponized Android App With 1M Installs $Steals$ $2FA$ Codes & $Passwords$ https://t.co/xka6VxHevt #androidapps #cyber #cybersecurity #informationsecurity #$malware$ #android #playstore',
+		'tweet': {
+			'data': {
+				'created_at': '2023-05-05T06:22:25.000Z',
+				'id': '1654371007094833152',
+				'lang': 'en',
+				'text_annotated': 'New Weaponized Android App With 1M Installs $Steals$ $2FA$ Codes & $Passwords$ https://t.co/xka6VxHevt #androidapps #cyber #cybersecurity #informationsecurity #$malware$ #android #playstore',
+				'text': 'New Weaponized Android App With 1M Installs $Steals$ $2FA$ Codes & $Passwords$ https://t.co/xka6VxHevt #androidapps #cyber #cybersecurity #informationsecurity #$malware$ #android #playstore',
+				'url': 'https://twitter.com/The_Cyber_News/status/1654371007094833152'
+			},
+			'includes': {
+				'users': [{'id': '1165106855879704577', 'name': 'Cyber Security News', 'profile_image_url': 'https://pbs.twimg.com/profile_images/1174924326807592960/aJMuU6Ms_400x400.jpg', 'username': 'The_Cyber_News'}]
+			}
+		}
+	})
+	register_tweet(first_tweet)
 
-def generate_tweet():
+
+def generate_2nd_tweet():
 	first_tweet = json.dumps({
 		'collection' : 'TD_tweets',
 		'priority' : 'low',
